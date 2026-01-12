@@ -54,7 +54,7 @@ export const getExcuse = (req, res) => {
   res.json({
     success: true,
     data: {
-      excuse: getRandom(all),
+      excuse: getRandom(getAllExcuses),
     },
   });
 };
