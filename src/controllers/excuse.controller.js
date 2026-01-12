@@ -1,6 +1,10 @@
 import { excuses } from "../data/excuses.js";
 
 const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const getAllExcuses = [
+  ...Object.values(excuses.levels).flat(),
+  ...Object.values(excuses.categories).flat(),
+];
 
 export const getExcuse = (req, res) => {
   const { level, category } = req.query;
@@ -47,15 +51,47 @@ export const getExcuse = (req, res) => {
     });
   }
 
+  res.json({
+    success: true,
+    data: {
+      excuse: getRandom(all),
+    },
+  });
+};
+
+export const getExcuseOfTheDay = (req, res) => {
   const all = [
     ...Object.values(excuses.levels).flat(),
     ...Object.values(excuses.categories).flat(),
   ];
 
+  const today = new Date().toISOString().split("T")[0];
+
+  const seed = today
+    .replaceAll("-", "")
+    .split("")
+    .reduce((sum, digit) => sum + Number(digit), 0);
+
+  const index = seed % all.length;
+
   res.json({
     success: true,
     data: {
-      excuse: getRandom(all),
+      excuse: all[index],
+      date: today,
+    },
+  });
+};
+
+export const getMeta = (req, res) => {
+  const levels = Object.keys(excuses.levels);
+  const categories = Object.keys(excuses.categories);
+
+  res.json({
+    success: true,
+    data: {
+      levels,
+      categories,
     },
   });
 };
